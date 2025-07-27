@@ -1,17 +1,9 @@
-import React, { useEffect, useState } from 'react';
 import Header from '@/components/layout/Header';
 import PostCard from '@/components/common/PostCard';
-import { PostProps } from '@/interfaces';
+import { type PostProps } from '@/interfaces';
+import { type GetStaticProps } from 'next';
 
-const PostsPage = () => {
-  const [posts, setPosts] = useState<PostProps[]>([]);
-
-  useEffect(() => {
-    fetch('https://jsonplaceholder.typicode.com/posts')
-      .then((response) => response.json())
-      .then((data) => setPosts(data));
-  }, []);
-
+const PostsPage = ({ posts }: { posts: PostProps[] }) => {
   return (
     <div>
       <Header />
@@ -25,6 +17,16 @@ const PostsPage = () => {
       </main>
     </div>
   );
+};
+
+export const getStaticProps: GetStaticProps = async () => {
+  const res = await fetch('https://jsonplaceholder.typicode.com/posts');
+  const posts: PostProps[] = await res.json();
+  return {
+    props: {
+      posts,
+    },
+  };
 };
 
 export default PostsPage;
